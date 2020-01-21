@@ -1,47 +1,44 @@
-# ARC
+# BUS
 
-ARC is a web app still in early development that aims to help teams manage their work using an asset driven mindset.
+Bus is a small package that functions as a simple central event bus for a javascript app.
 
-## Core Concepts
+## INSTALLATION
 
-The system is built under three concepts: Assets, Results, and Challenges. They are loosely based on OKR and Agile methodologies.
+You can simply download bus.js file from the src directory or install with npm
 
-### Assets
-
-Assets are things the teamwork wants to maximize and represent WHY the work should be done. They are an alternative to goals. The main difference is that while a goal is some sort of scope the team should achieve in a given date, assets are qualitative or quantitative metrics the team is always trying to maximize in balance. Assets are a way to collect feedback from the real world and adjust the team working logic.
-
-### Results
-
-Results represent WHAT work should be done. They are real deliverables or achievements that the team should reach. Results can stretch through a long period and need a clear declaration of done. They represent the high-level scope to be done.
-
-### Challenges
-
-Challenges are pieces of work carved out from results and represent HOW work should be done. They have clear assigments and completed in a short time frame. Challenges are periodically created and assigned to the team in small time cycles. They should not be spam for more than one month of planned time.
+    npm install @joaomelo/bus
 
 ## Getting Started
 
-The app is still in early stages and even an alfa version is probably months away. I work at it as a solo developer in my spare time after my main job working hours. When a version more suitable to experimenting and contributing is available i will update this file with instructions for installing, deploying and contributing.
+The whole behavior is driven by subscribe and publish functions.
 
-## Built With
+To listen to an event you import subscribe function given it a key to track the event and pass it a function to be called when the event happens.
 
-ARC is a Single Page Application developed with these main technologies
+    //a.js
+    import { subscribe } from '@joaomelo/bus';
 
-* [Vue](https://vuejs.org/) - The Progressive JavaScript Framework
-* [Bootstrap](https://getbootstrap.com/) - The world’s most popular front-end component library
-* [Firebase](https://firebase.google.com/) - A comprehensive app development platform
-* [Cypress](https://www.cypress.io/) - JavaScript End to End Testing Framework
-* [Webpack](https://webpack.js.org/) - JavaScript module bundler
+    function callback(payload){
+      console.log(payload);
+    };
 
-I also am helped by a lot of packages from the vibrating javascript community. All of them can be checked in the [package.json](package.json) file.
+    subscribe('SOME_TYPE_OF_EVENT', callback);
 
-## Versioning
+Then in another module, you can emit the event with some data as payload to all subscriber callbacks functions.
 
-I try to use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/joaomelo/arc/tags). 
+    //b.js
+    import { publish } from '@joaomelo/bus';
 
-## Author
+    const payload('hello world')
+    publish('SOME_TYPE_OF_EVENT', payload);
 
-[João Melo](https://www.linkedin.com/in/joaomelo81/?locale=en_US)
+Maybe you are subscribing after an event already happened in the past. For example, you want to listen for the user login but it happened automatically even before your code subscribed to the event.
+
+The BUS can run the callback once for the last publish occurrence for that event type, passing the last payload. For that, set as true the third and optional parameter (runIfCalled) to the subscribe function. The default behaviour is false.
+
+    subscribe('USER_LOGGED_IN', callback, true);
 
 ## License
+
+This was made by [João Melo](https://www.linkedin.com/in/joaomelo81/?locale=en_US)
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
