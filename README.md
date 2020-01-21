@@ -37,8 +37,20 @@ The BUS can run the callback once for the last publish occurrence for that event
 
     subscribe('USER_LOGGED_IN', callback, true);
 
+Lastly, the subscribe function returns another function to unsubscribe for the event in the future. Just call it to end the contract.
+
+    //c.js
+    import { subscribe } from '@joaomelo/bus';
+
+    function callback(payload){
+      console.log(payload);
+    };
+
+    const unsubscribe = subscribe('SOME_TYPE_OF_EVENT', callback);
+
+    //forget about it
+    unsubscribe();
+
 ## License
 
-This was made by [João Melo](https://www.linkedin.com/in/joaomelo81/?locale=en_US)
-
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
+Made by [João Melo](https://www.linkedin.com/in/joaomelo81/?locale=en_US) and licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
