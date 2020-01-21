@@ -35,4 +35,5 @@ function publish (eventType, payload) {
   subscription.state = SUBSCRIPTION_STATES.CALLED;
   subscription.callbacks.forEach(callback => callback(payload));
 }
+
 export { subscribe, publish };
