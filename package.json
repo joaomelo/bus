@@ -1,6 +1,6 @@
 {
   "name": "@joaomelo/bus",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "super simple central event bus for js apps",
   "main": "index.js",
   "scripts": {
