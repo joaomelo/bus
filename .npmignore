@@ -1,8 +1,1 @@
-coverage/
 node_modules/
-src/
-*.config.js
-.browserslistrc
-.eslintrc.js
-.gitignore
-jsconfig.json
