@@ -1,4 +1,7 @@
 module.exports = {
+  env: {
+    'jest/globals': true
+  },
   parserOptions: {
     parser: 'babel-eslint'
   },
@@ -6,6 +9,8 @@ module.exports = {
     semi: ['error', 'always']
   },
   extends: [
-    'standard'
+    'standard',
+    'plugin:jest/all'
   ],
+  plugins: ['jest']
 };

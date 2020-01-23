@@ -4,11 +4,14 @@ const dist = path.resolve(__dirname, './dist');
 
 module.exports = {
   mode: 'production',
+  devtool: 'source-map',
   entry: ['./src/index.js'],
   output: {
-    publicPath: '/',
     path: dist,
-    filename: 'index.js'
+    filename: 'index.js',
+    libraryTarget: 'umd',
+    globalObject: 'this',
+    library: 'bus'
   },
   module: {
     rules: [

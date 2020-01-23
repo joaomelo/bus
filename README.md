@@ -2,7 +2,7 @@
 
 Bus is a small package that functions as a simple central event bus for a javascript app.
 
-## INSTALLATION
+## Installation
 
 You can download bus.js file from the src directory or install with npm
 
@@ -35,7 +35,7 @@ Then you can publish (emit) the event with some data as payload to be passed to 
 
 Maybe you are subscribing after an event already happened in the past. For example, you want to listen for the user login but it happened automatically even before your code subscribed to the event.
 
-The BUS can run the callback once for the last publish occurrence for that event type, passing the last payload. For that, set as true the third and optional parameter (runIfCalled) to the subscribe function. The default behaviour is false.
+The BUS can run the callback once for the last publish occurrence for that event type, passing the last payload. For that, set as true the third and optional parameter (runIfCalled) to the subscribe function. The default behavior is false.
 
     subscribe('USER_LOGGED_IN', callback, true);
 
@@ -54,6 +54,10 @@ Lastly, the subscribe function returns another function to unsubscribe for the e
 
     //forget about it
     unsubscribe();
+
+## Testing
+
+The package has 100% test coverage. To run the tests install all dev dependencies and run `npm test`
 
 ## License
 
