@@ -6,20 +6,20 @@ const SUBSCRIPTION_STATES = {
 // subscription  singleton
 const subscriptions = new Map();
 
-function subscribe (eventType, callback, runIfCalled = false) {
-  if (!subscriptions.has(eventType)) {
+function subscribe (topic, callback, runIfPublished = false) {
+  if (!subscriptions.has(topic)) {
     const subscriptionTemplate = {
       state: SUBSCRIPTION_STATES.VIRGIN,
       lastPayload: null,
       callbacks: []
     };
-    subscriptions.set(eventType, subscriptionTemplate);
+    subscriptions.set(topic, subscriptionTemplate);
   }
 
-  const subscription = subscriptions.get(eventType);
+  const subscription = subscriptions.get(topic);
   subscription.callbacks.push(callback);
 
-  if (runIfCalled && subscription.state === SUBSCRIPTION_STATES.CALLED) {
+  if (runIfPublished && subscription.state === SUBSCRIPTION_STATES.CALLED) {
     callback(subscription.lastPayload);
   }
 
@@ -27,8 +27,8 @@ function subscribe (eventType, callback, runIfCalled = false) {
   return unsubscribe;
 }
 
-function publish (eventType, payload) {
-  const subscription = subscriptions.get(eventType);
+function publish (topic, payload) {
+  const subscription = subscriptions.get(topic);
   if (!subscription) return;
 
   subscription.lastPayload = payload;

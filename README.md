@@ -1,63 +1,115 @@
-# BUS
+# The EventBus
 
-Bus is a small package that functions as a simple central event bus for a javascript app.
+EventBus is a design pattern that helps decouple parts of a system that need to coordinate asynchronously with each other. The implementation and usage of an EventBus can be relatively simple. 
 
-## Installation
+Even so, if desired, this small and 100% test covered package can be used as one in any javascript app.
 
-You can download bus.js file from the src directory or install with npm
+## Motivation
+
+Let's say you are developing a javascript web app that needs to route to a new URL after login. You could do something like this:
+
+    // login.js
+
+    import { route } from '__src/router';
+
+    function login (email, password) {
+	    // perform some login logic
+	    route.to('/home');
+    }
+
+Cool. But let's say a few days later you discover that after login you need to make sure the user has profile information saved and create the default profile preferences if not. The code should evolve into something new.
+
+    // login.js
+    
+    import { route } from '__src/router';
+    import { hasProfile, createProfile } from '__src/profile';
+
+    function login(email, password) {
+      // perform some login logic
+      if (!hasProfile(email)) {
+        createProfile(email);
+      }
+      route.to('/home');
+    }
+
+Now, let's take a break, do some fun stuff and come back six months later to update the profile or router modules. What's the odds of this future you or some teammate remembers that login code is dependent on router or profile logic? Well, never tell me the odds.
+
+## Usage
+
+The EventBus approach minimizes this kind of hard dependency. There are some variations in how to implement it. But they gravitate around the same central pattern of publishing and subscribing to events types -- also known as topics.
+
+Let's start installing our package and keep the explanation going on. 
+
+### Installation
+
+You can download [bus.js file](https://github.com/joaomelo/bus/blob/master/src/bus.js) directly or install it with npm.
 
     npm install @joaomelo/bus
 
-## Getting Started
+### Getting Started
 
-The whole behavior is driven by the subscribe and publish functions.
+The behavior is driven by the subscribe and publish functions. To listen to a topic, you import the subscribe function and call it passing the topic key and a callback function to be called when the event is published. Our router and profile modules become:
 
-To listen to an event you import the subscribe function and call it passing a key to track the event and a callback function to be called when the event is published.
+    // router.js
+    import { subscribe }  from '@joaomelo/bus';
+    subscribe('USER_LOGGED_IN', () => { route.to('/home') } );
 
-    //a.js
-    import { subscribe } from '@joaomelo/bus';
+    // profile.js
+    import { subscribe }  from '@joaomelo/bus';
+    subscribe('USER_LOGGED_IN', email => { 
+      if (!hasProfile(email)) {
+        createProfile(email)
+      }
+    });
 
-    function callback(payload){
-      console.log(payload);
-    };
+The login module should now just publish the event without the need to understand any details about how this would be used. Data is passed as payload to all subscribers callback functions.
 
-    subscribe('SOME_TYPE_OF_EVENT', callback);
+    // login .js
+    import { publish } from '@joaomelo/bus'
 
-Then you can publish (emit) the event with some data as payload to be passed to all subscribers callback functions.
-
-    //b.js
-    import { publish } from '@joaomelo/bus';
-
-    const payload = 'hello world'
-    publish('SOME_TYPE_OF_EVENT', payload);
-
-### Late subscription
-
-Maybe you are subscribing after an event already happened in the past. For example, you want to listen for the user login but it happened automatically even before your code subscribed to the event.
-
-The BUS can run the callback once for the last publish occurrence for that event type, passing the last payload. For that, set as true the third and optional parameter (runIfCalled) to the subscribe function. The default behavior is false.
-
-    subscribe('USER_LOGGED_IN', callback, true);
+    function login(email, password) {
+	    // perform some login logic
+      publish('USER_LOGGED_IN', email)
+    }
 
 ### Unsubscribe
 
-Lastly, the subscribe function returns another function to unsubscribe for the event in the future. Just call it to end the contract.
+The subscribe function returns another function. Invoking it will prevent that particularly callback to be executed in future event publications.
 
-    //c.js
+    // some-module.js
     import { subscribe } from '@joaomelo/bus';
 
-    function callback(payload){
-      console.log(payload);
-    };
+    const unsub = subscribe('MY_TOPIC', payload => console.log(payload));
 
-    const unsubscribe = subscribe('SOME_TYPE_OF_EVENT', callback);
+    unsub(); // forget about it
 
-    //forget about it
-    unsubscribe();
+### Late subscription
+
+Everything until here is enough to use the Bus effectively. Complex business cases will impose more sophistication like queue management or failsafe recovery. Our humble package has only one configuration option. It is optional and could be passed as the third parameter of the subscribe function.
+
+Maybe you are subscribing after an event was already published. For example, you want to listen for the user login but it happened automatically on initialization based on some cached data. The code that subscribes to the login event was unable to catch that.
+
+The Bus can compensate for that running the callback immediately after subscription if the topic was published at last one time. The last payload will be passed. For that to happen, pass the boolean true value as the third parameter of the subscribe function.
+
+    subscribe('SOME_TOPIC', callback, true);
+
+## Wrapping up
+
+As said, the EventBus is simple to implement and use. You can check that the whole code resides in a few lines in one file. But it has its drawbacks. 
+
+Now you will have a central point of failure that can ruin a lot of expectations. If you change the EventBus maybe a large refactoring will be needed. 
+
+Another disadvantage is that even if the dependency was managed it didn't go away. The modules still share the topic key and payload as an indirect interface. A bug now can more hard to identify and fix.
+
+Still, is a very practical design and easily recognizable. I use it a lot when the dependency has no business meaning.
 
 ## Testing
 
-The package has 100% test coverage. To run the tests install all dev dependencies and run `npm test`
+The package has 100% test coverage. To run the tests, clone the repository, install all dev dependencies and have fun.
+
+    git clone https://github.com/joaomelo/bus.git
+    npm install
+    npm test
 
 ## License
 

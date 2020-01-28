@@ -6,10 +6,10 @@
   "scripts": {
     "lint": "eslint --ext .js src",
     "test": "npm run lint && jest",
-    "build": "rimraf dist/* && webpack --config webpack.config.js",
+    "build": "npm run lint && npm run test && rimraf dist/* && webpack --config webpack.config.js",
     "commit": "git add -A && git commit",
     "push": "git push && git push --tags",
-    "pack": "npm run lint && npm test && npm run build && npm run commit",
+    "pack": "npm run build && npm run commit",
     "bump:patch": "npm version patch && npm run push",
     "bump:minor": "npm version minor && npm run push",
     "release:patch": "npm run pack && npm run bump:patch && npm publish",
