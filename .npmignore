@@ -1,1 +1,7 @@
+converage/
 node_modules/
+src/
+.*.js
+*.config.js
+.gitignore
+jsconfig.json
