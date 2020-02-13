@@ -1,6 +1,8 @@
-import { subscribe, publish } from './index.js';
+import { subscribe, publish, clear } from './index.js';
 
 describe('when bus publishes', () => {
+  beforeEach(() => clear());
+
   it('the callback should be called', () => {
     expect.hasAssertions();
 
@@ -21,7 +23,7 @@ describe('when bus publishes', () => {
     expect(payload).toBe(1);
   });
 
-  it('a unsubscribed event no callback should be called', () => {
+  it('unsubscribed event no callback should be called', () => {
     expect.hasAssertions();
 
     let payload = 1;

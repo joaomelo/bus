@@ -3,20 +3,11 @@ const SUBSCRIPTION_STATES = {
   CALLED: Symbol('SUBSCRIPTION_STATES.CALLED')
 };
 
-// subscription  singleton
+// subscription map singleton
 const subscriptions = new Map();
 
 function subscribe (topic, callback, runIfPublished = false) {
-  if (!subscriptions.has(topic)) {
-    const subscriptionTemplate = {
-      state: SUBSCRIPTION_STATES.VIRGIN,
-      lastPayload: null,
-      callbacks: []
-    };
-    subscriptions.set(topic, subscriptionTemplate);
-  }
-
-  const subscription = subscriptions.get(topic);
+  const subscription = getOrCreateSubscription(topic);
   subscription.callbacks.push(callback);
 
   if (runIfPublished && subscription.state === SUBSCRIPTION_STATES.CALLED) {
@@ -28,12 +19,27 @@ function subscribe (topic, callback, runIfPublished = false) {
 }
 
 function publish (topic, payload) {
-  const subscription = subscriptions.get(topic);
-  if (!subscription) return;
-
+  const subscription = getOrCreateSubscription(topic);
   subscription.lastPayload = payload;
   subscription.state = SUBSCRIPTION_STATES.CALLED;
   subscription.callbacks.forEach(callback => callback(payload));
 }
 
-export { subscribe, publish };
+function getOrCreateSubscription (topic) {
+  if (!subscriptions.has(topic)) {
+    const subscriptionTemplate = {
+      state: SUBSCRIPTION_STATES.VIRGIN,
+      lastPayload: null,
+      callbacks: []
+    };
+    subscriptions.set(topic, subscriptionTemplate);
+  }
+  const subscription = subscriptions.get(topic);
+  return subscription;
+}
+
+function clear () {
+  subscriptions.clear();
+}
+
+export { subscribe, publish, clear };
