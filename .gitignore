@@ -8,6 +8,7 @@ firebase-debug.log*
 
 # Dist folder
 dist/
+coverage/
 
 # Runtime data
 pids
