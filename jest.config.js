@@ -1,7 +1,8 @@
 module.exports = {
   collectCoverage: true,
+  coverageDirectory: 'lib/coverage/',
   collectCoverageFrom: [
-    'src/*.js',
-    '!src/index.js'
+    'lib/src/*.js',
+    '!lib/src/index.js'
   ]
 };

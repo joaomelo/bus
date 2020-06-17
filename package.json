@@ -1,54 +1,52 @@
 {
   "name": "@joaomelo/bus",
   "version": "1.1.4",
-  "description": "super simple central event bus for js apps",
-  "main": "dist/index.js",
+  "description": "Library providing a simple Event Bus for JS apps.",
+  "main": "lib/dist/index.js",
   "scripts": {
-    "lint": "eslint --ext .js src",
+    "start": "npm run dev:lib",
+    "dev:lib": "jest --watch --coverage=false",
+    "lint": "eslint */src/**/*.js",
     "test": "npm run lint && jest",
-    "build": "npm run lint && npm run test && rimraf dist/* && webpack --config webpack.config.js",
-    "commit": "git add -A && git commit",
-    "pack": "npm run build && npm run commit",
-    "push": "git push && git push --tags",
-    "bump:patch": "npm version patch && npm run push",
-    "bump:minor": "npm version minor && npm run push",
-    "release:patch": "npm run pack && npm run bump:patch && npm publish",
-    "release:minor": "npm run pack && npm run bump:minor && npm publish"
+    "build": "rimraf lib/dist/* && webpack --config lib/config/webpack.config.js",
+    "deploy": "npm run build && npm publish --access public"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joaomelo/bus.git"
   },
   "keywords": [
-    "central",
-    "event",
-    "bus"
+    "reactivity",
+    "eventbus",
+    "bus",
+    "events"
   ],
-  "author": "joaomelo",
+  "author": "@joaomeloplus",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/joaomelo/bus/issues"
   },
   "homepage": "https://github.com/joaomelo/bus#readme",
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^24.9.0",
-    "babel-loader": "^8.0.6",
-    "compression-webpack-plugin": "^3.1.0",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-loader": "^3.0.3",
-    "eslint-plugin-import": "^2.19.1",
-    "eslint-plugin-jest": "^23.6.0",
-    "eslint-plugin-node": "^10.0.0",
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.0.1",
+    "babel-loader": "^8.1.0",
+    "circular-dependency-plugin": "^5.2.0",
+    "eslint": "^7.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jest": "^23.13.2",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "jest": "^24.9.0",
-    "rimraf": "^3.0.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "jest": "^26.0.1",
+    "rimraf": "^3.0.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2"
   }
 }
